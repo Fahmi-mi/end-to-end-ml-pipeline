@@ -1,0 +1,2 @@
+mlflow.set_tracking_uri("file:///d:/Fahmi/ai-data/ml/nama-folder-root/logs")
+mlflow ui --backend-store-uri file:///d:/Fahmi/ai-data/ml/nama-folder-root/logs
