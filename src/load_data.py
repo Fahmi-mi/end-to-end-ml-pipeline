@@ -42,10 +42,10 @@ class DataLoader:
         Returns:
             None: Menampilkan informasi dan deskripsi DataFrame
         """
-        print(f"{df} Info:")
+        print(f"Info:")
         df.info()
-        print(f"\n{df} Describe:")
-        print(df.describe())
+        print(f"\nDescribe:")
+        return df.describe()
         
     def preview_data(self, df, num_rows=5):
         """
