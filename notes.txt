@@ -1,3 +1,0 @@
-git clone https://github.com/Fahmi-mi/ml-base-template.git temp
-cp -r temp/* .
-rm -rf temp
