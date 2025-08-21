@@ -8,6 +8,12 @@ cp -r temp/* .
 rm -rf temp
 ```
 
+Untuk menghapus semua file `.gitkeep` secara rekursif di seluruh direktori, jalankan perintah berikut di PowerShell:
+
+```powershell
+Get-ChildItem -Recurse -Filter ".gitkeep" | Remove-Item -Force
+```
+
 ## 2. MLflow Tracking
 
 ```python
