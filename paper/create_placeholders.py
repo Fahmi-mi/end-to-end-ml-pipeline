@@ -2,27 +2,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Create missing values visualization placeholder
-plt.figure(figsize=(10, 6))
-np.random.seed(42)
-features = ['Feature_' + str(i) for i in range(1, 11)]
-missing_pct = np.random.uniform(0, 30, 10)
-plt.barh(features, missing_pct)
-plt.xlabel('Missing Percentage (%)')
-plt.title('Missing Values Analysis')
-plt.tight_layout()
-plt.savefig('images/missing_values.png', dpi=300, bbox_inches='tight')
-plt.close()
+def create_placeholder_image(filename, title="Placeholder Image", figsize=(10, 6)):
+    fig, ax = plt.subplots(figsize=figsize)
 
-# Create feature importance placeholder
-plt.figure(figsize=(10, 8))
-importance_scores = np.random.uniform(0.01, 0.15, 15)[::-1]
-feature_names = ['Feature_' + str(i) for i in range(1, 16)]
-plt.barh(feature_names, importance_scores)
-plt.xlabel('Importance Score')
-plt.title('Feature Importance from Best Model')
-plt.tight_layout()
-plt.savefig('images/feature_importance.png', dpi=300, bbox_inches='tight')
-plt.close()
+    ax.add_patch(plt.Rectangle((0, 0), 1, 1, color='lightgray'))
 
-print("Placeholder images created successfully!")
+    ax.text(0.5, 0.5, title, horizontalalignment='center', verticalalignment='center',
+            transform=ax.transAxes, fontsize=16, fontweight='bold', color='darkgray')
+
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+
+    plt.tight_layout()
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close()
+
+create_placeholder_image('images/placeholder.png', 'Generic Placeholder Image', (10, 6))
+
+print("Generic placeholder image created successfully!")

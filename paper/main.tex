@@ -7,10 +7,11 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage[margin=2.5cm]{geometry}
+\usepackage{float}
 
 % Title and author
-\title{\textbf{[Competition Name]: Machine Learning Analysis and Solution}}
-\author{[Your Name] \\ [Your Affiliation/Email]}
+\title{\textbf{Competition Name}: Machine Learning Analysis and Solution}
+\author{Fahmi Haqqul Ihsan \\ fahmihaqqulihsan@mail.ac.id}
 \date{\today}
 
 \begin{document}
@@ -18,17 +19,17 @@
 \maketitle
 
 \begin{abstract}
-This paper presents a comprehensive analysis and solution for the [Competition Name] machine learning competition. We explore the dataset characteristics, implement various preprocessing techniques, and evaluate multiple machine learning algorithms to achieve optimal performance. Our approach combines exploratory data analysis, feature engineering, and ensemble methods. The final solution achieves a [performance metric] of [score] on the test set.
+This paper presents a comprehensive analysis and solution for the {Competition Name} machine learning competition. We explore the dataset characteristics, implement various preprocessing techniques, and evaluate multiple machine learning algorithms to achieve optimal performance. Our approach combines exploratory data analysis, feature engineering, and ensemble methods. The final solution achieves a {performance metric} of {score} on the test set.
 
-\textbf{Keywords:} Machine Learning, Data Mining, [Competition Keywords], [Algorithm Names]
+\textbf{Keywords:} Machine Learning, Data Mining, {Competition Keywords}, {Algorithm Names}
 \end{abstract}
 
 \section{Introduction}
 
 \subsection{Problem Statement}
-[Describe the competition problem and objectives]
+{Describe the competition problem and objectives}
 
-The [Competition Name] competition presents a [classification/regression] problem where the goal is to [describe objective]. The dataset consists of [number] samples with [number] features.
+The {Competition Name} competition presents a {classification/regression} problem where the goal is to {describe objective}. The dataset consists of {number} samples with {number} features.
 
 \subsection{Our Approach}
 Our solution follows a systematic approach:
@@ -42,20 +43,41 @@ Our solution follows a systematic approach:
 \section{Dataset and Methodology}
 
 \subsection{Dataset Description}
-The dataset contains [number] training samples and [number] test samples with the following characteristics:
+The dataset contains {number} training samples and {number} test samples with the following characteristics:
 \begin{itemize}
-    \item Numerical features: [describe]
-    \item Categorical features: [describe] 
-    \item Target variable: [describe]
+    \item Numerical features: {describe}
+    \item Categorical features: {describe}
+    \item Target variable: {describe}
 \end{itemize}
 
 \subsection{Exploratory Data Analysis}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.png}
+    \caption{Missing Values Analysis}
+    \label{fig:missing_values}
+\end{figure}
+
 \paragraph{Missing Values Analysis}
-We analyzed missing values across all features. The distribution shows [describe pattern].
+We analyzed missing values across all features. The distribution shows {describe pattern}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.png}
+    \caption{Target Distribution}
+    \label{fig:target_dist}
+\end{figure}
 
 \paragraph{Target Distribution}
-The target variable shows [describe distribution]. This affects our choice of evaluation metrics and sampling strategies.
+The target variable shows {describe distribution}. This affects our choice of evaluation metrics and sampling strategies.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.png}
+    \caption{Feature Correlation Matrix}
+    \label{fig:correlation}
+\end{figure}
 
 \paragraph{Feature Correlation}
 We identified highly correlated features using correlation analysis. Features with correlation greater than 0.8 were considered for removal.
@@ -63,14 +85,14 @@ We identified highly correlated features using correlation analysis. Features wi
 \subsection{Data Preprocessing}
 Our preprocessing pipeline includes:
 \begin{enumerate}
-    \item Missing Value Imputation: [strategy]
-    \item Outlier Handling: [method]
-    \item Feature Scaling: [StandardScaler/MinMaxScaler]
-    \item Categorical Encoding: [OneHot/Label encoding]
+    \item Missing Value Imputation: {strategy}
+    \item Outlier Handling: {method}
+    \item Feature Scaling: {StandardScaler/MinMaxScaler}
+    \item Categorical Encoding: {OneHot/Label encoding}
 \end{enumerate}
 
 \subsection{Feature Engineering}
-We created [number] new features through:
+We created {number} new features through:
 \begin{itemize}
     \item Polynomial features for non-linear relationships
     \item Interaction features between key variables
@@ -84,7 +106,7 @@ We evaluated the following algorithms:
 \begin{itemize}
     \item Baseline: Logistic Regression, Decision Tree
     \item Ensemble: Random Forest, XGBoost, LightGBM
-    \item Advanced: [Neural Networks/SVM]
+    \item Advanced: {Neural Networks/SVM}
 \end{itemize}
 
 \subsection{Cross-Validation Results}
@@ -104,7 +126,7 @@ LightGBM & 0.XXX & 0.XXX \\
 \end{table}
 
 \subsection{Feature Importance}
-The most important features from our best model are: [list top features].
+The most important features from our best model are: {list top features}.
 
 % Uncomment when you have the image:
 % \begin{figure}[h]
@@ -127,9 +149,9 @@ Our final ensemble model achieves:
 
 \subsection{Key Findings}
 \begin{itemize}
-    \item Feature Engineering: [most impactful features]
-    \item Model Performance: [best performing models]
-    \item Ensemble Benefits: [improvement from ensembling]
+    \item Feature Engineering: {most impactful features}
+    \item Model Performance: {best performing models}
+    \item Ensemble Benefits: {improvement from ensembling}
 \end{itemize}
 
 \subsection{Lessons Learned}
@@ -151,7 +173,7 @@ Thanks to Kaggle and the competition organizers for providing this educational d
 
 % Uncomment if you have references
 % \begin{thebibliography}{9}
-% \bibitem{ref1} 
+% \bibitem{ref1}
 % Author. \textit{Title}. Journal, Year.
 % \end{thebibliography}
 
