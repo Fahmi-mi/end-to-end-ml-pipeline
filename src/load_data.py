@@ -58,7 +58,7 @@ class DataLoader:
         """
         return df.head(num_rows)
     
-    def split_data(self, df, target_column, test_size=0.2, random_state=42):
+    def split_data(self, df, id_column, target_column, test_size=0.2, random_state=42):
         """
         Parameters:
             df (pd.DataFrame): DataFrame yang ingin dibagi menjadi data latih dan u
@@ -69,7 +69,7 @@ class DataLoader:
         Returns:
             tuple: Tuple yang berisi DataFrame fitur latih, DataFrame fitur uji,
         """
-        X = df.drop(columns=[target_column])
+        X = df.drop(columns=[id_column, target_column])
         y = df[target_column]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
         return X_train, X_test, y_train, y_test
