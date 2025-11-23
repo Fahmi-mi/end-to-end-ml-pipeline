@@ -198,7 +198,7 @@ class FeatureEngineering:
         df[columns] = np.log1p(df[columns])
         return df
 
-    def binning(self, df, column, bins, labels=None):
+    def binning(self, df, column, bins, labels=None, include_lowest=True):
         """
         Parameters:
             df (pd.DataFrame): DataFrame input
@@ -209,7 +209,7 @@ class FeatureEngineering:
         Returns:
             pd.DataFrame: DataFrame dengan kolom yang sudah di-binning
         """
-        df[column + '_bin'] = pd.cut(df[column], bins=bins, labels=labels)
+        df[column + '_bin'] = pd.cut(df[column], bins=bins, labels=labels, include_lowest=include_lowest)
         return df
 
     def cap_outliers(self, df, column, lower_quantile=0.01, upper_quantile=0.99):
