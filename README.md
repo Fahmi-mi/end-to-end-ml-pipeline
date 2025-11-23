@@ -21,7 +21,7 @@ mlflow.set_tracking_uri("file:///d:/Fahmi/ai-data/ml/nama-folder-root/logs")
 ```
 
 ```bash
-mlflow ui --backend-store-uri file:///d:/Fahmi/ai-data/ml/nama-folder-root/logs
+mlflow ui --backend-store-uri file:///d:/Fahmi/ai/ml/nama-folder-root/logs
 ```
 
 ## 3. Panduan Exploratory Data Analysis (EDA)
