@@ -58,7 +58,7 @@ class DataLoader:
         """
         return df.head(num_rows)
     
-    def split_data(self, df, id_column, target_column, test_size=0.2, random_state=42):
+    def split_data(self, df, id_column, target_column, test_size=0.2, random_state=42, stratify=None):
         """
         Parameters:
             df (pd.DataFrame): DataFrame yang ingin dibagi menjadi data latih dan u
@@ -71,5 +71,5 @@ class DataLoader:
         """
         X = df.drop(columns=[id_column, target_column])
         y = df[target_column]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-        return X_train, X_test, y_train, y_test
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=df[stratify] if stratify else None)
+        return X_train, X_val, y_train, y_val
