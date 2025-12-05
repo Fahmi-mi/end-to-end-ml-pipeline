@@ -21,11 +21,11 @@ name . ".gitkeep" -type f -delete
 ## 2. MLflow Tracking
 
 ```python
-mlflow.set_tracking_uri("file:///c:/Documents/Fahmi/ai/ml/nama-folder-root/logs")
+mlflow.set_tracking_uri("file:///c:/Users/Axioo/Documents/Fahmi/ai/ml/nama-folder-root/logs")
 ```
 
 ```bash
-mlflow ui --backend-store-uri file:///c:/Documents/Fahmi/ai/ml/nama-folder-root/logs
+mlflow ui --backend-store-uri file:///c:/Users/Axioo/Documents/Fahmi/ai/ml/nama-folder-root/logs
 ```
 
 ## 3. Panduan Exploratory Data Analysis (EDA)
