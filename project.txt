@@ -1,0 +1,76 @@
+TABULAR ML PIPELINE - PORTOFOLIO PROJECT
+========================================
+
+Deskripsi Proyek
+----------------
+Proyek ini adalah end-to-end configurable ML pipeline untuk data tabular, dirancang khusus agar mudah digunakan di Kaggle Playground Series atau kompetisi tabular lainnya. 
+Pipeline ini mengutamakan:
+- Modularitas (setiap tahap terpisah)
+- Config-driven (semua pengaturan via file YAML, cukup copy & edit config baru untuk eksperimen berbeda)
+- Reproducibility (seed, logging, folder output terstruktur)
+- Best practices software engineering (src layout, unit tests, clean structure)
+- Kemudahan maintenance dan skalabilitas untuk masa depan
+
+Cocok sebagai portofolio hybrid Software Engineer + AI/ML karena menunjukkan kemampuan membangun sistem ML yang rapi, testable, dan production-ready.
+
+Struktur Folder Lengkap
+-----------------------
+
+tabular-ml-pipeline/                  ← Root proyek
+├── config/                           ← SEMUA file konfigurasi YAML
+│   ├── default.yaml                  ← Template utama (paling sering dipakai)
+│   └── local.yaml                    ← Override pribadi (path lokal, dll) → akan di-.gitignore
+├── data/
+│   ├── raw/                          ← Dataset asli (train.csv, test.csv) → tidak di-commit
+│   └── processed/                    ← Optional: data setelah preprocessing (untuk caching)
+├── src/                              ← Kode utama (Python package)
+│   ├── __init__.py                   ← Wajib agar src jadi package
+│   ├── config_loader.py              ← Load YAML config + override local.yaml
+│   ├── data_loader.py                ← Load train.csv dan test.csv
+│   ├── preprocessor.py               ← Imputation, encoding, scaling (menggunakan scikit-learn)
+│   ├── feature_engineering.py        ← Tambah interaksi, binning, fitur custom
+│   ├── trainer.py                    ← Pilih model, cross-validation, training
+│   ├── evaluator.py                  ← Metrics, feature importance, plotting
+│   ├── predictor.py                  ← Generate submission.csv
+│   └── utils.py                      ← Logger, set seed, helper functions
+├── notebooks/                        ← Eksplorasi dan visualisasi
+│   ├── 01_eda.ipynb                  ← Exploratory Data Analysis + data checking
+│   ├── 02_feature_engineering.ipynb  ← Eksperimen dan validasi ide fitur baru
+│   ├── 03_experiment.ipynb           ← Baseline, hyperparameter tuning, model comparison
+│   └── archive/                      ← Optional: simpan notebook versi lama
+├── experiments/                      ← Hasil tiap run (otomatis dibuat berdasarkan nama experiment)
+│   ├── default_experiment/
+│   │   ├── model.pkl
+│   │   ├── submission.csv
+│   │   ├── metrics.json
+│   │   ├── feature_importance.png
+│   │   └── log.txt
+│   └── ...                           ← Folder lain untuk experiment berbeda
+├── tests/                            ← Unit tests (pytest)
+│   ├── __init__.py
+│   ├── conftest.py                   ← Optional: fixture bersama
+│   ├── test_config_loader.py
+│   ├── test_data_loader.py
+│   ├── test_preprocessor.py
+│   ├── test_feature_engineering.py
+│   └── test_utils.py
+├── .gitignore                        ← File penting untuk Git
+├── requirements.txt                  ← Daftar dependencies Python
+├── README.md                         ← Dokumentasi utama proyek (wajib lengkap dan menarik)
+└── main.py                           ← Entry point: python main.py --config default
+
+Cara Menggunakan (Ringkas)
+-------------------------
+1. Download dataset Kaggle → taruh di data/raw/
+2. Copy config/default.yaml menjadi config/nama_baru.yaml
+3. Edit config baru sesuai dataset (path, target column, features, model, dll)
+4. Jalankan: python main.py --config nama_baru
+5. Hasil muncul di experiments/<nama_experiment>/
+
+Keunggulan untuk Portofolio
+--------------------------
+- Clean & professional structure (mirip proyek industri)
+- Config-driven → mudah demo banyak eksperimen
+- Ada notebooks untuk storytelling (EDA → Feature → Experiment)
+- Ada unit tests → nunjukin skill software engineering solid
+- Mudah dikembangkan (tambah Optuna, MLflow, ensemble, Docker, dll)

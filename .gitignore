@@ -1,0 +1,16 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+data/raw/*
+data/processed/*
+experiments/*
+*.pkl
+*.joblib
+config/local.yaml
+.DS_Store
