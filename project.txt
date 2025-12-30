@@ -9,11 +9,9 @@ Pipeline ini mengutamakan:
 - Modularitas (setiap tahap terpisah)
 - Config-driven (semua pengaturan via file YAML, cukup copy & edit config baru untuk eksperimen berbeda)
 - Reproducibility (seed, logging, folder output terstruktur)
-- Best practices software engineering (src layout, unit tests, clean structure)
+- Best practices software engineering (src layout, unit tests, clean structure, typing hints)
 - Performa komputasi tinggi (optimasi loading, preprocessing, dan training)
 - Kemudahan maintenance dan skalabilitas untuk masa depan
-
-Cocok sebagai portofolio hybrid Software Engineer + AI/ML karena menunjukkan kemampuan membangun sistem ML yang rapi, testable, efisien, dan production-ready.
 
 Struktur Folder Lengkap (Diperbarui)
 ------------------------------------
