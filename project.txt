@@ -1,76 +1,111 @@
-TABULAR ML PIPELINE - PORTOFOLIO PROJECT
-========================================
+TABULAR ML PIPELINE - PORTOFOLIO PROJECT (Updated: December 31, 2025)
+====================================================================
 
 Deskripsi Proyek
 ----------------
-Proyek ini adalah end-to-end configurable ML pipeline untuk data tabular, dirancang khusus agar mudah digunakan di Kaggle Playground Series atau kompetisi tabular lainnya. 
+Proyek ini adalah end-to-end configurable ML pipeline untuk data tabular, dirancang khusus agar mudah digunakan di Kaggle Playground Series atau kompetisi tabular lainnya.
+
 Pipeline ini mengutamakan:
 - Modularitas (setiap tahap terpisah)
 - Config-driven (semua pengaturan via file YAML, cukup copy & edit config baru untuk eksperimen berbeda)
 - Reproducibility (seed, logging, folder output terstruktur)
 - Best practices software engineering (src layout, unit tests, clean structure)
+- Performa komputasi tinggi (optimasi loading, preprocessing, dan training)
 - Kemudahan maintenance dan skalabilitas untuk masa depan
 
-Cocok sebagai portofolio hybrid Software Engineer + AI/ML karena menunjukkan kemampuan membangun sistem ML yang rapi, testable, dan production-ready.
+Cocok sebagai portofolio hybrid Software Engineer + AI/ML karena menunjukkan kemampuan membangun sistem ML yang rapi, testable, efisien, dan production-ready.
 
-Struktur Folder Lengkap
------------------------
+Struktur Folder Lengkap (Diperbarui)
+------------------------------------
 
 tabular-ml-pipeline/                  ← Root proyek
 ├── config/                           ← SEMUA file konfigurasi YAML
 │   ├── default.yaml                  ← Template utama (paling sering dipakai)
-│   └── local.yaml                    ← Override pribadi (path lokal, dll) → akan di-.gitignore
+│   ├── playground_current.yaml       ← Config khusus dataset saat ini
+│   ├── xgboost_tuned.yaml            ← Contoh varian hyperparameter/model
+│   └── local.yaml                    ← Override pribadi (path lokal, dll) → di-.gitignore
 ├── data/
-│   ├── raw/                          ← Dataset asli (train.csv, test.csv) → tidak di-commit
-│   └── processed/                    ← Optional: data setelah preprocessing (untuk caching)
+│   ├── raw/                          ← Dataset asli dari Kaggle (train.csv, test.csv) → tidak di-commit
+│   └── processed/                    ← Data dalam format Parquet untuk performa optimal
+│       ├── train.parquet             ← Konversi dari train.csv (lebih cepat & kecil)
+│       └── test.parquet              ← Konversi dari test.csv
 ├── src/                              ← Kode utama (Python package)
-│   ├── __init__.py                   ← Wajib agar src jadi package
-│   ├── config_loader.py              ← Load YAML config + override local.yaml
-│   ├── data_loader.py                ← Load train.csv dan test.csv
-│   ├── preprocessor.py               ← Imputation, encoding, scaling (menggunakan scikit-learn)
-│   ├── feature_engineering.py        ← Tambah interaksi, binning, fitur custom
-│   ├── trainer.py                    ← Pilih model, cross-validation, training
-│   ├── evaluator.py                  ← Metrics, feature importance, plotting
-│   ├── predictor.py                  ← Generate submission.csv
-│   └── utils.py                      ← Logger, set seed, helper functions
-├── notebooks/                        ← Eksplorasi dan visualisasi
-│   ├── 01_eda.ipynb                  ← Exploratory Data Analysis + data checking
-│   ├── 02_feature_engineering.ipynb  ← Eksperimen dan validasi ide fitur baru
-│   ├── 03_experiment.ipynb           ← Baseline, hyperparameter tuning, model comparison
-│   └── archive/                      ← Optional: simpan notebook versi lama
-├── experiments/                      ← Hasil tiap run (otomatis dibuat berdasarkan nama experiment)
-│   ├── default_experiment/
-│   │   ├── model.pkl
-│   │   ├── submission.csv
-│   │   ├── metrics.json
-│   │   ├── feature_importance.png
-│   │   └── log.txt
-│   └── ...                           ← Folder lain untuk experiment berbeda
-├── tests/                            ← Unit tests (pytest)
 │   ├── __init__.py
-│   ├── conftest.py                   ← Optional: fixture bersama
+│   ├── config_loader.py
+│   ├── data_loader.py                ← Support otomatis CSV atau Parquet
+│   ├── preprocessor.py               ← Optimasi memori & kecepatan (sparse, downcast dtype)
+│   ├── feature_engineering.py        ← Vectorized operations, selective enable/disable
+│   ├── trainer.py                    ← Support model cepat (LightGBM/CatBoost), parallel CV
+│   ├── evaluator.py
+│   ├── predictor.py
+│   └── utils.py                      ← Logger, set seed, memory cleanup
+├── scripts/                          ← BARU: Script pendukung (tidak wajib dijalankan tiap run)
+│   └── convert_to_parquet.py         ← Konversi sekali CSV → Parquet (snappy compression)
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   ├── 03_experiment.ipynb
+│   └── archive/
+├── experiments/                      ← Hasil tiap run (model, submission, log, dll)
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
 │   ├── test_config_loader.py
-│   ├── test_data_loader.py
+│   ├── test_data_loader.py           ← Termasuk test load Parquet
 │   ├── test_preprocessor.py
 │   ├── test_feature_engineering.py
 │   └── test_utils.py
-├── .gitignore                        ← File penting untuk Git
-├── requirements.txt                  ← Daftar dependencies Python
-├── README.md                         ← Dokumentasi utama proyek (wajib lengkap dan menarik)
-└── main.py                           ← Entry point: python main.py --config default
+├── .gitignore
+├── requirements.txt                  ← Ditambah pyarrow (untuk Parquet support)
+├── README.md
+└── main.py                           ← Entry point dengan timing total execution
 
-Cara Menggunakan (Ringkas)
--------------------------
-1. Download dataset Kaggle → taruh di data/raw/
-2. Copy config/default.yaml menjadi config/nama_baru.yaml
-3. Edit config baru sesuai dataset (path, target column, features, model, dll)
-4. Jalankan: python main.py --config nama_baru
+Optimasi Performa Komputasi (Fokus Utama Update)
+-----------------------------------------------
+Pipeline ini telah dioptimasi secara khusus untuk kecepatan eksekusi dan efisiensi memori:
+
+1. Format Data: Parquet (snappy compression)
+   - Load time: 5–20x lebih cepat dibanding CSV
+   - Ukuran file: 3–10x lebih kecil
+   - Memori: columnar storage + predicate pushdown (hanya baca kolom dibutuhkan)
+
+2. Data Loading
+   - pd.read_parquet otomatis digunakan jika ekstensi .parquet
+   - Selective column loading (opsional di config nanti)
+
+3. Preprocessing & Memory
+   - Downcast numeric types (float64 → float32, int64 → int32)
+   - OneHotEncoder dengan sparse=True (hemat memori drastis jika categorical banyak)
+   - Vectorized operations only (no slow apply/lambda loops)
+
+4. Feature Engineering
+   - Semua operasi vectorized (Pandas/NumPy)
+   - Enable/disable per fitur via config untuk eksperimen cepat
+
+5. Training
+   - Prioritas model cepat: LightGBM > CatBoost > XGBoost
+   - Parallel processing (n_jobs=-1 di CV dan model)
+   - Parameter efisien default (max_bin, subsample, early_stopping)
+
+6. Caching & Reusability
+   - Data processed disimpan di data/processed/ (Parquet)
+   - Preprocessor/model bisa di-cache dengan joblib (opsional fase lanjutan)
+
+Cara Menggunakan (Diperbarui)
+----------------------------
+1. Download dataset Kaggle → taruh di data/raw/ sebagai CSV
+2. Jalankan sekali: python scripts/convert_to_parquet.py
+   → Otomatis konversi semua CSV menjadi Parquet di data/processed/
+3. Update config/*.yaml:
+   - Ganti train_path dan test_path ke .parquet
+4. Jalankan: python main.py --config default (atau nama config lain)
 5. Hasil muncul di experiments/<nama_experiment>/
 
-Keunggulan untuk Portofolio
---------------------------
+Keunggulan untuk Portofolio (Diperbarui)
+---------------------------------------
 - Clean & professional structure (mirip proyek industri)
 - Config-driven → mudah demo banyak eksperimen
 - Ada notebooks untuk storytelling (EDA → Feature → Experiment)
-- Ada unit tests → nunjukin skill software engineering solid
-- Mudah dikembangkan (tambah Optuna, MLflow, ensemble, Docker, dll)
+- Ada unit tests → skill software engineering solid
+- Performa komputasi tinggi (Parquet + optimasi memori & kecepatan)
+- Mudah dikembangkan (tambah Optuna, MLflow, ensemble, Docker, GPU support, dll)
