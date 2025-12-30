@@ -21,8 +21,6 @@ Struktur Folder Lengkap (Diperbarui)
 tabular-ml-pipeline/                  ← Root proyek
 ├── config/                           ← SEMUA file konfigurasi YAML
 │   ├── default.yaml                  ← Template utama (paling sering dipakai)
-│   ├── playground_current.yaml       ← Config khusus dataset saat ini
-│   ├── xgboost_tuned.yaml            ← Contoh varian hyperparameter/model
 │   └── local.yaml                    ← Override pribadi (path lokal, dll) → di-.gitignore
 ├── data/
 │   ├── raw/                          ← Dataset asli dari Kaggle (train.csv, test.csv) → tidak di-commit
