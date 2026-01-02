@@ -14,3 +14,7 @@ experiments/*
 *.joblib
 config/local.yaml
 .DS_Store
+logs/
+logs/*.log
+mlruns/
+*.log

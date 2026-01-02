@@ -1,6 +1,8 @@
+# KONTEKS PROYEK UNTUK GITHUB COPILOT
+
 # Tabular ML Pipeline - Portofolio Hybrid Software Engineer + AI/ML
 
-# Updated: December 31, 2025
+# Updated: January 01, 2026 (v2.0 - Added Logging & MLflow)
 
 ## Tujuan Utama Proyek
 
@@ -16,47 +18,51 @@ Ini adalah portofolio pribadi yang menonjolkan kemampuan sebagai Software Engine
 
 1. **Format data**: Gunakan Parquet (snappy compression) di folder data/processed/
 
-   - Alasan: load 5–20x lebih cepat, ukuran file jauh lebih kecil, columnar storage
    - Ada script terpisah: scripts/convert_to_parquet.py untuk konversi sekali dari CSV
 
 2. **Data loading**:
 
    - src/data_loader.py harus support otomatis CSV atau Parquet berdasarkan ekstensi file
-   - Selective column loading opsional di masa depan
 
-3. **Optimasi performa komputasi** (fokus utama):
+3. **Optimasi performa komputasi**:
 
    - Downcast dtype otomatis (float64 → float32, int64 → int32)
    - OneHotEncoder dengan sparse=True
-   - Semua operasi di feature engineering HARUS vectorized (Pandas/NumPy), TIDAK boleh pakai loop atau apply/lambda lambat
-   - Parallel processing: n_jobs=-1 di CV dan model yang support
+   - Semua operasi di feature engineering HARUS vectorized (Pandas/NumPy)
+   - Parallel processing: n_jobs=-1
    - Prioritas model cepat: LightGBM > CatBoost > XGBoost
-   - Parameter efisien: max_bin, subsample, early_stopping, dll
 
 4. **Code quality**:
 
-   - Wajib pakai type hints bawaan Python (from typing import Dict, List, Tuple, Any, Optional)
-   - Tidak perlu mypy dulu (cukup Pylance di VSCode untuk warning)
-   - Style: PEP8, docstrings jelas, nama variabel deskriptif
+   - Wajib pakai type hints bawaan Python
+   - Style: PEP8, docstrings jelas
    - Belum pakai linter eksternal (Ruff/Black) tapi siap ditambah nanti
 
-5. **Notebooks**:
+5. **Logging & Experiment Tracking**:
+
+   - Logging: comprehensive logging dengan level configurability (DEBUG/INFO/WARNING/ERROR)
+   - MLflow: tracking parameters, metrics, artifacts, dan models
+   - Log location: logs/ folder dengan mlruns/ subdirectory untuk MLflow
+   - Integration: setup_logger() di utils.py, MLflow logging di trainer.py
+
+6. **Notebooks**:
 
    - Hanya 3 notebook utama:
      - 01_eda.ipynb → EDA + data checking
      - 02_feature_engineering.ipynb → Eksperimen fitur + validasi visual
-     - 03_experiment.ipynb → Baseline, tuning, model comparison
+     - 03_experiment.ipynb → Baseline, tuning, model comparison, ensemble (bebas!)
    - Folder archive/ untuk versi lama
 
-6. **Testing**:
+7. **Testing**:
 
    - Unit tests dengan pytest di folder tests/
    - Sudah direncanakan: test_config_loader, test_data_loader (termasuk Parquet), test_preprocessor, test_feature_engineering, test_utils
 
-7. **Struktur yang sudah final**:
-   - Semua config di folder config/ (termasuk default.yaml)
+8. **Struktur yang sudah final**:
+   - Semua config di folder config/
    - local.yaml untuk override pribadi (di-.gitignore)
    - src/ sebagai Python package (dengan **init**.py)
+   - logs/ untuk log files dan mlruns/ (MLflow tracking)
    - experiments/ untuk output per run
    - main.py sebagai entry point dengan argparse dan timing total execution
 
@@ -68,14 +74,89 @@ Ini adalah portofolio pribadi yang menonjolkan kemampuan sebagai Software Engine
 - Performant: hindari operasi lambat, prioritaskan vectorized dan memory-efficient
 - Readable: docstring, type hints, comment secukupnya
 
-## Hal yang Belum Dijalankan (Fase Lanjutan - Opsional)
+## Default Config Structure (config/default.yaml)
 
-- Hyperparameter tuning dengan Optuna
-- Experiment tracking dengan MLflow
-- Ensemble/stacking
-- Caching preprocessor dengan joblib
-- GPU support
-- Docker deployment
+Ini adalah struktur lengkap config/default.yaml yang harus diikuti. Semua path di output mendukung placeholder `{experiment.name}` yang akan diganti otomatis.
 
-Copilot, tolong bantu saya menulis kode yang sesuai dengan semua konteks di atas.
-Prioritaskan kebersihan kode, performa komputasi, dan kemudahan eksperimen melalui config.
+```yaml
+experiment:
+  name: "default_preprocessing" # Nama folder di experiments/
+  seed: 42 # Untuk reproducibility
+
+logging:
+  enabled: true
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_to_file: true
+  log_to_console: true
+  log_dir: "logs"
+  log_filename: "{experiment.name}.log" # Support placeholder
+
+mlflow:
+  enabled: true
+  tracking_uri: "logs/mlruns" # Path ke MLflow tracking directory
+  experiment_name: "{experiment.name}" # Auto dari experiment.name
+  run_name: null # null = auto-generate dengan timestamp
+  log_params: true # Log semua hyperparameters
+  log_metrics: true # Log metrics per CV fold
+  log_artifacts: true # Log plots dan files
+  log_model: true # Log trained model
+  tags:
+    project: "ml-base-template"
+    author: "Your Name"
+
+data:
+  train_path: "data/processed/train.parquet"
+  test_path: "data/processed/test.parquet"
+  target_column: "target" # Ganti sesuai dataset
+  id_column: "id" # Untuk submission (kosongkan jika tidak ada)
+  drop_columns: [] # Kolom yang langsung dibuang
+
+preprocessing:
+  enabled: true # Master switch untuk skip semua preprocessing
+
+  numerical_features: [] # Contoh: ["Age", "Fare", "SibSp", "Parch"]
+  categorical_features: [] # Contoh: ["Sex", "Embarked", "Pclass"]
+
+  imputation:
+    enabled: true # false → skip imputation
+    strategy:
+      numerical: "median" # "mean", "median", "constant"
+      categorical: "most_frequent" # "most_frequent", "constant"
+
+  encoding:
+    enabled: true # false → biarkan categorical (bagus untuk CatBoost)
+    method: "onehot" # "onehot", "ordinal", "label"
+    onehot_sparse: true # Hemat memori
+
+  scaling:
+    enabled: false # Default false karena tree-based tidak butuh
+    method: "standard" # "standard", "minmax", "robust"
+    apply_to: "numerical_only" # atau "all"
+
+  downcast_dtype:
+    enabled: true # Hampir selalu true → hemat memori
+
+feature_engineering:
+  enabled: true
+
+  interactions: [] # Contoh: ["Age*Fare", "Pclass*Fare"]
+
+  binning:
+    {} # Contoh:
+    # Age: [0, 12, 18, 35, 60, 100]
+    # Fare: [0, 8, 15, 31, 1000]
+
+performance:
+  parallel_jobs: -1 # n_jobs untuk paralelisme
+  cache_preprocessor: false # Nanti bisa true + joblib
+
+output:
+  processed_train_path: "experiments/{experiment.name}/train_processed.parquet"
+  processed_test_path: "experiments/{experiment.name}/test_processed.parquet"
+  preprocessor_path: "experiments/{experiment.name}/preprocessor.pkl" # Optional cache
+
+  # Tempat hasil modeling final (diisi manual dari notebook)
+  model_path: "experiments/{experiment.name}/model_final.pkl"
+  submission_path: "experiments/{experiment.name}/submission.csv"
+  feature_importance_path: "experiments/{experiment.name}/feature_importance.png"
+```

@@ -1,4 +1,4 @@
-TABULAR ML PIPELINE - PORTOFOLIO PROJECT (Updated: December 31, 2025)
+TABULAR ML PIPELINE - PORTOFOLIO PROJECT (Updated: January 01, 2026)
 ====================================================================
 
 Deskripsi Proyek
@@ -9,6 +9,7 @@ Pipeline ini mengutamakan:
 - Modularitas (setiap tahap terpisah)
 - Config-driven (semua pengaturan via file YAML, cukup copy & edit config baru untuk eksperimen berbeda)
 - Reproducibility (seed, logging, folder output terstruktur)
+- Experiment tracking (MLflow integration untuk tracking parameter, metrics, dan artifacts)
 - Best practices software engineering (src layout, unit tests, clean structure, typing hints)
 - Performa komputasi tinggi (optimasi loading, preprocessing, dan training)
 - Kemudahan maintenance dan skalabilitas untuk masa depan
@@ -25,16 +26,19 @@ tabular-ml-pipeline/                  ← Root proyek
 │   └── processed/                    ← Data dalam format Parquet untuk performa optimal
 │       ├── train.parquet             ← Konversi dari train.csv (lebih cepat & kecil)
 │       └── test.parquet              ← Konversi dari test.csv
+├── logs/                             ← BARU: Logging dan MLflow tracking
+│   ├── *.log                         ← Log files per experiment
+│   └── mlruns/                       ← MLflow tracking artifacts
 ├── src/                              ← Kode utama (Python package)
 │   ├── __init__.py
 │   ├── config_loader.py
 │   ├── data_loader.py                ← Support otomatis CSV atau Parquet
 │   ├── preprocessor.py               ← Optimasi memori & kecepatan (sparse, downcast dtype)
 │   ├── feature_engineering.py        ← Vectorized operations, selective enable/disable
-│   ├── trainer.py                    ← Support model cepat (LightGBM/CatBoost), parallel CV
+│   ├── trainer.py                    ← Support model cepat (LightGBM/CatBoost), parallel CV, MLflow integration
 │   ├── evaluator.py
 │   ├── predictor.py
-│   └── utils.py                      ← Logger, set seed, memory cleanup
+│   └── utils.py                      ← Setup logger, set seed, memory cleanup, MLflow helpers
 ├── scripts/                          ← BARU: Script pendukung (tidak wajib dijalankan tiap run)
 │   └── convert_to_parquet.py         ← Konversi sekali CSV → Parquet (snappy compression)
 ├── notebooks/
@@ -94,14 +98,18 @@ Cara Menggunakan (Diperbarui)
    → Otomatis konversi semua CSV menjadi Parquet di data/processed/
 3. Update config/*.yaml:
    - Ganti train_path dan test_path ke .parquet
+   - Sesuaikan logging dan mlflow settings jika perlu
 4. Jalankan: python main.py --config default (atau nama config lain)
 5. Hasil muncul di experiments/<nama_experiment>/
+6. (Opsional) Lihat MLflow UI: mlflow ui --backend-store-uri logs/mlruns
 
 Keunggulan untuk Portofolio (Diperbarui)
 ---------------------------------------
 - Clean & professional structure (mirip proyek industri)
 - Config-driven → mudah demo banyak eksperimen
+- Experiment tracking dengan MLflow → reproducibility dan comparison mudah
+- Logging comprehensive → debugging dan monitoring jelas
 - Ada notebooks untuk storytelling (EDA → Feature → Experiment)
 - Ada unit tests → skill software engineering solid
 - Performa komputasi tinggi (Parquet + optimasi memori & kecepatan)
-- Mudah dikembangkan (tambah Optuna, MLflow, ensemble, Docker, GPU support, dll)
+- Mudah dikembangkan (tambah Optuna, ensemble, Docker, GPU support, dll)
