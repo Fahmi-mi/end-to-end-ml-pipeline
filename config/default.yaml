@@ -23,6 +23,14 @@ mlflow:
     project: "ml-base-template"
     author: "Your Name"
 
+model:
+  type: "lightgbm"
+  task_type: "classification"
+  cv:
+    n_folds: 5
+    shuffle: true
+    stratified: true
+
 data:
   train_path: "data/processed/train.parquet"
   test_path: "data/processed/test.parquet"

@@ -104,6 +104,40 @@ mlflow:
     project: "ml-base-template"
     author: "Your Name"
 
+model:
+  type: "lightgbm" # Model type: "lightgbm", "catboost", "xgboost"
+  task_type: "classification" # Task type: "classification" atau "regression"
+
+  cv:
+    n_folds: 5 # Jumlah fold untuk cross-validation
+    shuffle: true # Shuffle data sebelum split
+    stratified: true # Stratified split (true untuk classification, false untuk regression)
+
+  params: # Hyperparameters model (sesuaikan dengan model.type)
+    # LightGBM default params
+    num_leaves: 31
+    learning_rate: 0.05
+    feature_fraction: 0.8
+    bagging_fraction: 0.8
+    bagging_freq: 5
+    max_depth: -1
+    min_child_samples: 20
+    reg_alpha: 0.0
+    reg_lambda: 0.0
+
+    # CatBoost params (uncomment jika type: "catboost")
+    # depth: 6
+    # l2_leaf_reg: 3
+    # border_count: 128
+    # iterations: 1000
+
+    # XGBoost params (uncomment jika type: "xgboost")
+    # max_depth: 6
+    # min_child_weight: 1
+    # gamma: 0
+    # subsample: 0.8
+    # colsample_bytree: 0.8
+
 data:
   train_path: "data/processed/train.parquet"
   test_path: "data/processed/test.parquet"
