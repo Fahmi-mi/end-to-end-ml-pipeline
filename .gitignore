@@ -22,3 +22,5 @@ logs/
 logs/*.log
 mlruns/
 *.log
+project.txt
+CONTEXT.md
