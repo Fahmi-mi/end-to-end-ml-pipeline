@@ -104,7 +104,7 @@ def _load_csv(
     """
     df = pd.read_csv(
         file_path,
-        columns=columns,
+        usecols=columns,
         nrows=nrows,
         dtype=dtype,
         low_memory=False
