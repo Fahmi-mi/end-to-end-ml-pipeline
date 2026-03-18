@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Optional, List, Tuple
 import logging
+from pandas.errors import EmptyDataError
 
 logger = logging.getLogger(__name__)
 
@@ -102,13 +103,16 @@ def _load_csv(
     Returns:
         DataFrame
     """
-    df = pd.read_csv(
-        file_path,
-        usecols=columns,
-        nrows=nrows,
-        dtype=dtype,
-        low_memory=False
-    )
+    try:
+        df = pd.read_csv(
+            file_path,
+            usecols=columns,
+            nrows=nrows,
+            dtype=dtype,
+            low_memory=False
+        )
+    except EmptyDataError:
+        df = pd.DataFrame()
     
     return df
 

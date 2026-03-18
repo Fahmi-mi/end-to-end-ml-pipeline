@@ -46,7 +46,9 @@ def setup_logger(
     """
     logger = logging.getLogger(name)
     logger.setLevel(getattr(logging, log_level.upper()))
-    logger.handlers.clear()
+    for handler in logger.handlers[:]:
+        handler.close()
+        logger.removeHandler(handler)
     
     formatter = logging.Formatter(
         fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -110,7 +112,7 @@ def reduce_mem_usage(df, verbose: bool = True) -> Any:
     
     if verbose:
         reduction = 100 * (start_mem - end_mem) / start_mem
-        print(f"Memory usage reduced from {start_mem:.2f} MB to {end_mem:.2f} MB ({reduction:.1f}% reduction)")
+        print(f"Memory usage decreased from {start_mem:.2f} MB to {end_mem:.2f} MB ({reduction:.1f}% reduction)")
     
     return df
 

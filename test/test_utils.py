@@ -50,6 +50,11 @@ class TestSetupLogger:
         """Create temporary directory for logs."""
         temp_dir = tempfile.mkdtemp()
         yield temp_dir
+        for logger_obj in list(logging.Logger.manager.loggerDict.values()):
+            if isinstance(logger_obj, logging.Logger):
+                for handler in logger_obj.handlers[:]:
+                    handler.close()
+                    logger_obj.removeHandler(handler)
         shutil.rmtree(temp_dir)
         
     def test_setup_logger_console_only(self):
@@ -115,6 +120,7 @@ class TestSetupLogger:
             name="test_nested",
             log_to_file=True,
             log_to_console=False,
+            log_dir=str(nested_dir)
         )
         
         assert nested_dir.exists()
