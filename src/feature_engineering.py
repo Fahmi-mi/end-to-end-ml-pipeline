@@ -174,19 +174,17 @@ class FeatureEngineer:
                 logger.warning(f"Skipping binning for {feature}: feature not found")
                 continue
             
-            labels = [f"{feature}_bin_{i}" for i in range(len(bins) - 1)]
-            
             try:
                 new_feature_name = f"{feature}_binned"
-                X[new_feature_name] = pd.cut(
+                binned = pd.cut(
                     X[feature],
                     bins=bins,
-                    labels=labels,
+                    labels=False,
                     include_lowest=True,
                     duplicates='drop'
                 )
-                
-                X[new_feature_name] = X[new_feature_name].astype(str)
+
+                X[new_feature_name] = binned.fillna(-1).astype(np.int16)
                 
                 self.created_features.append(new_feature_name)
                 logger.debug(f"Created bins for {feature}: {new_feature_name}")

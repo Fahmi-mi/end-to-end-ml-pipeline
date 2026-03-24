@@ -159,7 +159,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 1: LOAD DATA
     # ============================================================
     if mode in ['full', 'train']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 1: LOADING DATA")
         logger.info("="*60)
         
@@ -193,7 +194,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 2: PREPROCESSING
     # ============================================================
     if mode in ['full', 'train']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 2: PREPROCESSING")
         logger.info("="*60)
         
@@ -236,7 +238,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 3: FEATURE ENGINEERING
     # ============================================================
     if mode in ['full', 'train']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 3: FEATURE ENGINEERING")
         logger.info("="*60)
         
@@ -272,7 +275,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 4: TRAINING
     # ============================================================
     if mode in ['full', 'train']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 4: MODEL TRAINING")
         logger.info("="*60)
         
@@ -290,6 +294,7 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
             results['oof_predictions'] = oof_preds
             results['test_predictions'] = test_preds
             results['trainer'] = trainer
+            results['y_train_encoded'] = trainer.y_train_encoded if trainer.y_train_encoded is not None else results['y_train']
             
             trainer.save_models()
             
@@ -306,7 +311,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 5: EVALUATION
     # ============================================================
     if mode in ['full', 'train']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 5: MODEL EVALUATION")
         logger.info("="*60)
         
@@ -314,9 +320,10 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
         
         try:
             evaluator = ModelEvaluator(task_type=task_type)
+            y_eval = results.get('y_train_encoded', results['y_train'])
             
             metrics = evaluator.evaluate(
-                y_true=results['y_train'],
+                y_true=y_eval,
                 y_pred=results['oof_predictions'],
                 prefix='oof_'
             )
@@ -331,14 +338,14 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
             if task_type == 'classification':
                 cm_path = exp_dir / "confusion_matrix.png"
                 evaluator.plot_confusion_matrix(
-                    results['y_train'],
+                    y_eval,
                     results['oof_predictions'],
                     str(cm_path)
                 )
                 
                 roc_path = exp_dir / "roc_curve.png"
                 evaluator.plot_roc_curve(
-                    results['y_train'],
+                    y_eval,
                     results['oof_predictions'],
                     str(roc_path)
                 )
@@ -361,7 +368,8 @@ def run_pipeline(config: Dict[str, Any], mode: str, logger: logging.Logger) -> D
     # STAGE 6: PREDICTION & SUBMISSION
     # ============================================================
     if mode in ['full', 'predict']:
-        logger.info("\n" + "="*60)
+        logger.info("\n")
+        logger.info("="*60)
         logger.info("STAGE 6: PREDICTION & SUBMISSION")
         logger.info("="*60)
         
@@ -414,7 +422,8 @@ def print_summary(results: Dict[str, Any], logger: logging.Logger, total_time: f
         logger: Logger instance
         total_time: Total execution time in seconds
     """
-    logger.info("\n" + "="*60)
+    logger.info("\n")
+    logger.info("="*60)
     logger.info("PIPELINE EXECUTION SUMMARY")
     logger.info("="*60)
     
