@@ -74,7 +74,7 @@ class ModelTrainer:
         self.stratified = self.cv_config.get('stratified', True)
         
         self.random_state = config.get('experiment', {}).get('seed', 42)
-        self.model_params = model_params or self._default_model_params()
+        self.model_params = model_params or self.model_config.get('params') or self._get_default_params()
         
         self.mlflow_config = config.get('mlflow', {})
         self.use_mlflow = self.mlflow_config.get('enabled', False) and MLFLOW_AVAILABLE
@@ -383,6 +383,8 @@ class ModelTrainer:
         else:
             preds = model.predict(X)
             
+        return preds
+            
     def _calculate_metric(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
         """
         Calculate evaluation metric.
@@ -422,7 +424,7 @@ class ModelTrainer:
             else:
                 continue
             
-        importances.append(imp)
+            importances.append(imp)
         
         avg_importance = np.mean(importances, axis=0)
         
@@ -432,7 +434,7 @@ class ModelTrainer:
         }).sort_values('importance', ascending=False)
         
         logger.info(f"\nTop 10 important features:")
-        logger.info(self.feature_importance.head(10).to_string(index=False))
+        logger.info(self.feature_importances.head(10).to_string(index=False))
         
     def _setup_mlflow(self) -> None:
         """Setup MLflow tracking."""
