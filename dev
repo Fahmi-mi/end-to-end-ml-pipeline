@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+META_FILE="${DEV_METADATA_PATH:-$ROOT_DIR/.dev_metadata.json}"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  dev check
+  dev inspect <feature>
+  dev help
+
+Environment:
+  DEV_METADATA_PATH  Override metadata path (default: .dev_metadata.json)
+USAGE
+}
+
+require_file() {
+  if [[ ! -f "$META_FILE" ]]; then
+    echo "Metadata file not found: $META_FILE" >&2
+    echo "Create it first or set DEV_METADATA_PATH." >&2
+    exit 1
+  fi
+}
+
+require_jq() {
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is required for this command." >&2
+    echo "Install jq or use Git Bash with jq available." >&2
+    exit 1
+  fi
+}
+
+print_summary() {
+  jq -r '
+    "project_name: " + (.project_name // "n/a"),
+    "last_updated: " + (.last_updated // "n/a"),
+    "total_rows: " + (.global_stats.total_rows|tostring),
+    "class_balance: " + (.global_stats.class_balance|tostring)
+  ' "$META_FILE"
+}
+
+print_table() {
+  local tsv
+  tsv=$(jq -r '
+    .features
+    | to_entries
+    | map({name: .key, type: (.value.type // "unknown"), missing_pct: (.value.missing_pct // "n/a")})
+    | ( ["feature", "type", "missing_pct"], ["-------", "----", "-----------"] ),
+      ( .[] | [.name, .type, (.missing_pct|tostring)] )
+    | @tsv
+  ' "$META_FILE")
+
+  if command -v column >/dev/null 2>&1; then
+    echo "$tsv" | column -t -s $'\t'
+  else
+    echo "$tsv"
+  fi
+}
+
+cmd="${1:-help}"
+
+case "$cmd" in
+  check)
+    require_file
+    require_jq
+    print_summary
+    echo ""
+    print_table
+    ;;
+  inspect)
+    require_file
+    require_jq
+    feature="${2:-}"
+    if [[ -z "$feature" ]]; then
+      echo "Feature name is required." >&2
+      echo "Example: dev inspect brightness_level" >&2
+      exit 1
+    fi
+    jq -r --arg feat "$feature" '
+      .features[$feat] as $f
+      | if $f == null then
+          "Feature not found: " + $feat
+        else
+          "feature: " + $feat,
+          "type: " + ($f.type // "unknown"),
+          "mean: " + (($f.mean // "n/a")|tostring),
+          "median: " + (($f.median // "n/a")|tostring),
+          "std: " + (($f.std // "n/a")|tostring),
+          "missing_pct: " + (($f.missing_pct // "n/a")|tostring),
+          "skewness: " + (($f.skewness // "n/a")|tostring),
+          "outliers_count: " + (($f.outliers_count // "n/a")|tostring),
+          "range: " + (if $f.range then ($f.range|tostring) else "n/a" end),
+          "handling_strategy: " + ($f.handling_strategy // "n/a"),
+          "notes: " + ($f.notes // "n/a")
+        end
+    ' "$META_FILE"
+    ;;
+  help|--help|-h)
+    usage
+    ;;
+  *)
+    echo "Unknown command: $cmd" >&2
+    usage
+    exit 1
+    ;;
+esac

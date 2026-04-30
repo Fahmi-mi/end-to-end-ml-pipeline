@@ -2,9 +2,11 @@ import logging
 import random
 import os
 import gc
+import json
 from pathlib import Path
 from typing import Optional, Dict, Any
 import numpy as np
+import pandas as pd
 
 def set_seed(seed: int) -> None:
     """
@@ -173,3 +175,67 @@ def format_time(seconds: float) -> str:
         return f"{m}m {s}s"
     else:
         return f"{s}s"
+    
+def export_dev_metadata(
+    df,
+    output_path: str = ".dev_metadata.json",
+    project_name: str = "ml-base-project",
+    notes: Optional[Dict[str, str]] = None,
+    handling_strategy: Optional[Dict[str, str]] = None,
+    extra_global_status: Optional[Dict[str, Any]] = None
+) -> None:
+    """
+    Export lightweight EDA metadata to JSON for CLI consumption.
+
+    Args:
+        df: pandas DataFrame (EDA dataset).
+        output_path: Output JSON path.
+        project_name: Project name label.
+        notes: Optional per-feature notes {feature: note}.
+        handling_strategy: Optional per-feature strategy {feature: strategy}.
+        extra_global_stats: Optional extra global stats.
+    """
+    notes = notes or {}
+    handling_strategy = handling_strategy or {}
+    extra_global_status = extra_global_status or {}
+    
+    numeric_cols = df.select_dtypes(include='"number').columns.tolist()
+    
+    features = {}
+    for col in df.columns:
+        col_meta: Dict[str, Any] = {}
+        col_meta["type"] = str(df[col].dtype)
+        
+        if col in numeric_cols:
+            col_meta["mean"] = float(df[col].mean())
+            col_meta["median"] = float(df[col].median())
+            col_meta["std"] = float(df[col].std())
+            col_meta["skewness"] = float(df[col].skew())
+            col_meta["missing_pct"] = float(df[col].isna().mean())
+            
+            col_min = df[col].min()
+            col_mix = df[col].max()
+            if pd.notna(col_min) and pd.notna(col_mix):
+                col_meta["range"] = [float(col_min), float(col_mix)]
+        
+        if col in notes:
+            col_meta["notes"] = notes[col]
+        if col in handling_strategy:
+            col_meta["handling_strategy"] = handling_strategy[col]
+        
+        features[col] = col_meta
+    
+    global_stats = {
+        "total_rows": int(len(df))
+    }
+    global_stats.update(extra_global_status)
+    
+    payload = {
+        "project_name": project_name,
+        "last_updated": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M"),
+        "features": features,
+        "global_stats": global_stats
+    }
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=True)

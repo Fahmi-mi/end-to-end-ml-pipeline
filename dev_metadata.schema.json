@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dev Metadata",
+  "type": "object",
+  "required": ["project_name", "last_updated", "features", "global_stats"],
+  "properties": {
+    "project_name": { "type": "string" },
+    "last_updated": { "type": "string" },
+    "features": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/featureMeta" }
+    },
+    "global_stats": {
+      "type": "object",
+      "properties": {
+        "total_rows": { "type": "number" },
+        "class_balance": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "featureMeta": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "mean": { "type": "number" },
+        "median": { "type": "number" },
+        "std": { "type": "number" },
+        "skewness": { "type": "number" },
+        "outliers_count": { "type": "number" },
+        "missing_pct": { "type": "number" },
+        "range": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "handling_strategy": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}
